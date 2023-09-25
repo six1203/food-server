@@ -1,6 +1,8 @@
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
+#本地数据库连接,主要用于生成model和query
+MYSQL_DSN := root:root@tcp(127.0.0.1:3306)/food
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
@@ -55,6 +57,10 @@ generate:
 	go mod tidy
 	go get github.com/google/wire/cmd/wire@latest
 	go generate ./...
+
+model:
+	@gentool -dsn "${MYSQL_DSN}?charset=utf8mb4&parseTime=True&loc=Local" -outPath=${ROOT_DIR}/internal/data/mysql/model/ -onlyModel -fieldWithIndexTag -fieldNullable
+    #@gentool -dsn "${MYSQL_DSN}?charset=utf8mb4&parseTime=True&loc=Local" -outPath=${ROOT_DIR}/internal/data/mysql/model/ --tables=t_SettleObj -onlyModel -fieldWithIndexTag -fieldNullable
 
 .PHONY: all
 # generate all

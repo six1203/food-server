@@ -3,37 +3,51 @@
 
 openapi: 3.0.3
 info:
-    title: Greeter API
-    description: The greeting service definition.
+    title: User API
     version: 0.0.1
 paths:
-    /helloworld/{name}:
-        get:
+    /v1/user/login/byUsername:
+        post:
             tags:
-                - Greeter
-                - subgroup
-            description: Sends a greeting
-            operationId: Greeter_SayHello
-            parameters:
-                - name: name
-                  in: path
-                  required: true
-                  schema:
-                    type: string
+                - User
+            operationId: User_LoginByUsername
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.LoginByUsernameRequest'
+                required: true
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+                                $ref: '#/components/schemas/api.user.v1.LoginByUsernameReply'
 components:
     schemas:
-        helloworld.v1.HelloReply:
+        api.user.v1.LoginByUsernameReply:
             type: object
             properties:
-                message:
+                userInfo:
+                    $ref: '#/components/schemas/api.user.v1.UserInfo'
+        api.user.v1.LoginByUsernameRequest:
+            type: object
+            properties:
+                username:
                     type: string
-            description: The response message containing the greetings
+                password:
+                    type: string
+        api.user.v1.UserInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                password:
+                    type: string
+                token:
+                    type: string
 tags:
-    - name: Greeter
+    - name: User
