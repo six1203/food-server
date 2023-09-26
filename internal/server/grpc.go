@@ -11,20 +11,20 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, userService *service.UserService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Config, userService *service.UserService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
 		),
 	}
-	if c.Grpc.Network != "" {
-		opts = append(opts, grpc.Network(c.Grpc.Network))
+	if c.Server.Grpc.Network != "" {
+		opts = append(opts, grpc.Network(c.Server.Grpc.Network))
 	}
-	if c.Grpc.Addr != "" {
-		opts = append(opts, grpc.Address(c.Grpc.Addr))
+	if c.Server.Grpc.Addr != "" {
+		opts = append(opts, grpc.Address(c.Server.Grpc.Addr))
 	}
-	if c.Grpc.Timeout != nil {
-		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
+	if c.Server.Grpc.Timeout != nil {
+		opts = append(opts, grpc.Timeout(c.Server.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
 	user.RegisterUserServer(srv, userService)

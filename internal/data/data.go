@@ -26,14 +26,14 @@ type Data struct {
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger, db *gorm.DB, rdb *redis.Client) (*Data, func(), error) {
+func NewData(c *conf.Config, logger log.Logger, db *gorm.DB, rdb *redis.Client) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
 	}
 	return &Data{db: db, rdb: rdb}, cleanup, nil
 }
 
-func NewDB(c *conf.Data) *gorm.DB {
+func NewDB(c *conf.Config) *gorm.DB {
 	// 终端打印输入 sql 执行记录
 	newLogger := logger.New(
 		slog.New(os.Stdout, "\r\n", slog.LstdFlags), // io writer
@@ -45,10 +45,10 @@ func NewDB(c *conf.Data) *gorm.DB {
 		},
 	)
 
-	db, err := gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{
+	db, err := gorm.Open(mysql.Open(c.Data.Database.Source), &gorm.Config{
 		Logger:                                   newLogger,
 		DisableForeignKeyConstraintWhenMigrating: true,
-		NamingStrategy: schema.NamingStrategy{
+		NamingStrategy:                           schema.NamingStrategy{
 			//SingularTable: true, // 表名是否加 s
 		},
 	})
@@ -61,14 +61,14 @@ func NewDB(c *conf.Data) *gorm.DB {
 	return db
 }
 
-func NewRedis(c *conf.Data) *redis.Client {
+func NewRedis(c *conf.Config) *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:         c.Redis.Addr,
-		Password:     c.Redis.Password,
-		DB:           int(c.Redis.Db),
-		DialTimeout:  c.Redis.DialTimeout.AsDuration(),
-		WriteTimeout: c.Redis.WriteTimeout.AsDuration(),
-		ReadTimeout:  c.Redis.ReadTimeout.AsDuration(),
+		Addr:         c.Data.Redis.Addr,
+		Password:     c.Data.Redis.Password,
+		DB:           int(c.Data.Redis.Db),
+		DialTimeout:  c.Data.Redis.DialTimeout.AsDuration(),
+		WriteTimeout: c.Data.Redis.WriteTimeout.AsDuration(),
+		ReadTimeout:  c.Data.Redis.ReadTimeout.AsDuration(),
 	})
 	rdb.AddHook(redisotel.TracingHook{})
 	if err := rdb.Close(); err != nil {

@@ -2,11 +2,9 @@ package service
 
 import (
 	"context"
-	"fmt"
+	pb "food-server/api/user/v1"
 	"food-server/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
-
-	pb "food-server/api/user/v1"
 )
 
 type UserService struct {
@@ -35,7 +33,6 @@ func (s *UserService) ListUser(ctx context.Context, req *pb.ListUserRequest) (*p
 	return &pb.ListUserReply{}, nil
 }
 func (s *UserService) LoginByUsername(ctx context.Context, req *pb.LoginByUsernameRequest) (*pb.LoginByUsernameReply, error) {
-	fmt.Println("LoginByUsername", req.Username, req.Password)
 	user, err := s.uc.LoginByUsername(ctx, req.Username, req.Password)
 	if err != nil {
 		return nil, err

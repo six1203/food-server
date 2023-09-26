@@ -14,3 +14,7 @@ data:
     read_timeout: 0.2s
     write_timeout: 0.2s
     dial_timeout: 1s
+jwt:
+  secret: ToIZET+HX^a4Y$U3B%k{r{Yc=z4{%bi|
+# 过期时间，单位h
+#  expire_duration: 24h

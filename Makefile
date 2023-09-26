@@ -1,8 +1,12 @@
+#项目根路径
+ROOT_DIR := $(shell pwd)
+
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 #本地数据库连接,主要用于生成model和query
 MYSQL_DSN := root:root@tcp(127.0.0.1:3306)/food
+
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
