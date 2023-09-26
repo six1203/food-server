@@ -16,5 +16,5 @@ data:
     dial_timeout: 1s
 jwt:
   secret: ToIZET+HX^a4Y$U3B%k{r{Yc=z4{%bi|
-# 过期时间，单位h
-#  expire_duration: 24h
+  # token过期时间，单位小时
+  expire_duration: 24

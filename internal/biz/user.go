@@ -4,14 +4,17 @@ import (
 	"context"
 	v1 "food-server/api/helloworld/v1"
 	"food-server/internal/conf"
+	"food-server/internal/pkg/middleware/auth"
 
-	"github.com/go-kratos/kratos/v2/errors"
+	"errors"
+	kerrors "github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 var (
 	// ErrUserNotFound is user not found.
-	ErrUserNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
+	ErrUserNotFound        = kerrors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
+	ErrGenerateTokenFailed = errors.New("generate token failed")
 )
 
 // User is a User model.
@@ -61,10 +64,14 @@ func (uc *UserUsecase) LoginByUsername(ctx context.Context, username, password s
 	if err != nil {
 		return nil, err
 	}
+	token, err := auth.GenerateToken(user.Username, uc.config.Jwt)
+	if err != nil {
+		return nil, ErrGenerateTokenFailed
+	}
 	return &LoginUser{
 		ID:       user.ID,
 		Username: user.Username,
 		Password: user.Password,
-		Token:    "",
+		Token:    token,
 	}, nil
 }

@@ -46,5 +46,5 @@ message Data {
 
 message JWT {
   string secret = 1;
-//  google.protobuf.Duration  expire_duration = 2;
+  int32  expire_duration = 2;
 }

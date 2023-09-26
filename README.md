@@ -19,7 +19,7 @@ kratos proto server api/server/server.proto -t internal/service
 
 go generate ./...
 go build -o ./bin/ ./...
-./bin/server -conf ./configs
+./bin/food-server -conf ./configs
 ```
 ## Generate other auxiliary files by Makefile
 ```
