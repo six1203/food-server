@@ -30,7 +30,7 @@ func NewHTTPServer(c *conf.Config, userService *service.UserService, logger log.
 		),
 		// 浏览器跨域
 		http.Filter(handlers.CORS(
-			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Token"}),
 			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
 			handlers.AllowedOrigins([]string{"*"}),
 		)),
