@@ -1,7 +1,7 @@
 package server
 
 import (
-	user "food-server/api/user/v1"
+	food "food-server/api/food/v1"
 	"food-server/internal/conf"
 	"food-server/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
@@ -10,7 +10,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Config, userService *service.UserService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Config, s *service.FoodService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -27,6 +27,6 @@ func NewGRPCServer(c *conf.Config, userService *service.UserService, logger log.
 		opts = append(opts, grpc.Timeout(c.Server.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	user.RegisterUserServer(srv, userService)
+	food.RegisterFoodServer(srv, s)
 	return srv
 }

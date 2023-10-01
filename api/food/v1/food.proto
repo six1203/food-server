@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package api.food.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "food-server/api/food/v1;v1";
+
+
+service Food {
+  rpc LoginByUsername (LoginByUsernameRequest) returns (LoginByUsernameReply) {
+    option (google.api.http) = {
+      post: "/v1/user/login/byUsername",
+      body: "*"
+    };
+  };
+
+  rpc ListCollectionShop (ListCollectionShopRequest) returns (ListCollectionShopReply) {
+    option (google.api.http) = {
+      post: "/v1/collection_shop/list"
+      body: "*"
+    };
+  };
+}
+
+
+
+message userInfo {
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string token = 4;
+}
+
+message LoginByUsernameRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginByUsernameReply {
+  userInfo userInfo = 1;
+}
+
+
+message CollectionShop {
+  int64 id = 1;
+  string category = 2;
+  string name = 3;
+  string logo = 4;
+  string address = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+message ListCollectionShopRequest {
+  int32 page = 1;
+  int32 pageSize = 2;
+  string fuzzySearchText = 3;
+}
+message ListCollectionShopReply {
+  int32 total = 1;
+  repeated CollectionShop data = 2;
+}

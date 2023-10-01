@@ -1,30 +1,75 @@
 package auth
 
 import (
-	"food-server/internal/conf"
-	"github.com/golang-jwt/jwt/v4"
+	"context"
+	"errors"
+	"fmt"
+	"strings"
 	"time"
+
+	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/transport"
+	"github.com/golang-jwt/jwt/v4"
 )
 
-type MyClaims struct {
-	Username string `json:"username"`
-	jwt.MapClaims
+var currentUserKey struct{}
+
+type CurrentUser struct {
+	UserID uint
 }
 
-func GenerateToken(username string, jwtConfig *conf.JWT) (string, error) {
-	//var tokenExpireDuration = int32(time.Hour/time.Second) * jwtConfig.ExpireDuration
+func GenerateToken(secret string, userid uint) string {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"userid": userid,
+		"nbf":    time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+	})
 
-	c := MyClaims{
-		username,
-		jwt.MapClaims{
-			"ExpiresAt": time.Now().Add(24 * time.Hour).Unix(),
-			"Issuer":    "food",
-		},
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(secret))
+	if err != nil {
+		panic(err)
 	}
+	return tokenString
+}
 
-	//使用指定的签名方法创建签名对象
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
+func JWTAuth(secret string) middleware.Middleware {
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
+			if tr, ok := transport.FromServerContext(ctx); ok {
+				tokenString := tr.RequestHeader().Get("Authorization")
+				auths := strings.SplitN(tokenString, " ", 2)
+				if len(auths) != 2 || !strings.EqualFold(auths[0], "Token") {
+					return nil, errors.New("jwt token missing")
+				}
 
-	//使用指定的secret签名并获得完成的编码后的字符串token
-	return token.SignedString([]byte(jwtConfig.Secret))
+				token, err := jwt.Parse(auths[1], func(token *jwt.Token) (interface{}, error) {
+					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+						return nil, errors.New(fmt.Sprintf("unexpected signing method: %v", token.Header["alg"]))
+					}
+					return []byte(secret), nil
+				})
+
+				if err != nil {
+					return nil, err
+				}
+
+				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+					if u, ok := claims["userid"]; ok {
+						ctx = WithContext(ctx, &CurrentUser{UserID: uint(u.(float64))})
+					}
+				} else {
+					return nil, errors.New("token Invalid")
+				}
+			}
+			return handler(ctx, req)
+		}
+	}
+}
+
+func FromContext(ctx context.Context) *CurrentUser {
+	return ctx.Value(currentUserKey).(*CurrentUser)
+}
+
+func WithContext(ctx context.Context, user *CurrentUser) context.Context {
+	return context.WithValue(ctx, currentUserKey, user)
 }

@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: User API
+    title: Food API
     version: 0.0.1
 paths:
-    /v1/user/login/byUsername:
+    /v1/collection_shop/list:
         post:
             tags:
-                - User
-            operationId: User_LoginByUsername
+                - Food
+            operationId: Food_ListCollectionShop
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.user.v1.LoginByUsernameRequest'
+                            $ref: '#/components/schemas/api.food.v1.ListCollectionShopRequest'
                 required: true
             responses:
                 "200":
@@ -23,22 +23,80 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.user.v1.LoginByUsernameReply'
+                                $ref: '#/components/schemas/api.food.v1.ListCollectionShopReply'
+    /v1/user/login/byUsername:
+        post:
+            tags:
+                - Food
+            operationId: Food_LoginByUsername
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.food.v1.LoginByUsernameRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.food.v1.LoginByUsernameReply'
 components:
     schemas:
-        api.user.v1.LoginByUsernameReply:
+        api.food.v1.CollectionShop:
+            type: object
+            properties:
+                id:
+                    type: string
+                category:
+                    type: string
+                name:
+                    type: string
+                logo:
+                    type: string
+                address:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+        api.food.v1.ListCollectionShopReply:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: int32
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.food.v1.CollectionShop'
+        api.food.v1.ListCollectionShopRequest:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+                fuzzySearchText:
+                    type: string
+        api.food.v1.LoginByUsernameReply:
             type: object
             properties:
                 userInfo:
-                    $ref: '#/components/schemas/api.user.v1.UserInfo'
-        api.user.v1.LoginByUsernameRequest:
+                    $ref: '#/components/schemas/api.food.v1.UserInfo'
+        api.food.v1.LoginByUsernameRequest:
             type: object
             properties:
                 username:
                     type: string
                 password:
                     type: string
-        api.user.v1.UserInfo:
+        api.food.v1.UserInfo:
             type: object
             properties:
                 id:
@@ -50,4 +108,4 @@ components:
                 token:
                     type: string
 tags:
-    - name: User
+    - name: Food

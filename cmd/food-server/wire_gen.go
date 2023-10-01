@@ -32,9 +32,11 @@ func wireApp(config *conf.Config, logger log.Logger) (*kratos.App, func(), error
 	}
 	userRepo := data.NewUserRepo(dataData, logger)
 	userUsecase := biz.NewUserUsecase(config, userRepo, logger)
-	userService := service.NewUserService(userUsecase, logger)
-	grpcServer := server.NewGRPCServer(config, userService, logger)
-	httpServer := server.NewHTTPServer(config, userService, logger)
+	collectionShopRepo := data.NewCollectionShopRepo(dataData, logger)
+	collectionShopUsecase := biz.NewCollectionShopUsecase(config, collectionShopRepo, logger)
+	foodService := service.NewFoodService(userUsecase, collectionShopUsecase, logger)
+	grpcServer := server.NewGRPCServer(config, foodService, logger)
+	httpServer := server.NewHTTPServer(config, foodService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

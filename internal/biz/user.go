@@ -2,19 +2,10 @@ package biz
 
 import (
 	"context"
-	v1 "food-server/api/helloworld/v1"
 	"food-server/internal/conf"
 	"food-server/internal/pkg/middleware/auth"
 
-	"errors"
-	kerrors "github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	// ErrUserNotFound is user not found.
-	ErrUserNotFound        = kerrors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
-	ErrGenerateTokenFailed = errors.New("generate token failed")
 )
 
 // User is a User model.
@@ -34,10 +25,6 @@ type LoginUser struct {
 // UserRepo is a Greater repo.
 type UserRepo interface {
 	Save(context.Context, *User) (*User, error)
-	Update(context.Context, *User) (*User, error)
-	FindByID(context.Context, int64) (*User, error)
-	ListByHello(context.Context, string) ([]*User, error)
-	ListAll(context.Context) ([]*User, error)
 	FindByUserinfo(context.Context, string, string) (*User, error)
 }
 
@@ -64,10 +51,7 @@ func (uc *UserUsecase) LoginByUsername(ctx context.Context, username, password s
 	if err != nil {
 		return nil, err
 	}
-	token, err := auth.GenerateToken(user.Username, uc.config.Jwt)
-	if err != nil {
-		return nil, ErrGenerateTokenFailed
-	}
+	token := auth.GenerateToken(uc.config.Jwt.Secret, uint(user.ID))
 	return &LoginUser{
 		ID:       user.ID,
 		Username: user.Username,

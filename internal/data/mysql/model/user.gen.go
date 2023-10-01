@@ -14,9 +14,9 @@ const TableNameUser = "user"
 
 // User mapped from table <user>
 type User struct {
-	ID        int64          `gorm:"column:id;primaryKey" json:"id"`
-	Username    string         `gorm:"column:username;not null;uniqueIndex:username,priority:1;comment:" json:"username"` // 用户名，唯一
-	Password  string         `gorm:"column:password;not null;comment:加密的密码串" json:"password"`
+	ID        int64          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	Username  string         `gorm:"column:username;not null;comment:用户名，唯一" json:"username"` // 用户名，唯一
+	Password  string         `gorm:"column:password;not null;comment:密文" json:"password"`     // 密文
 	CreatedAt time.Time      `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
