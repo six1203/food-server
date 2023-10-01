@@ -42,3 +42,21 @@ func ErrorEncoder(w stdhttp.ResponseWriter, r *stdhttp.Request, err error) {
 	}
 	w.Write(body)
 }
+
+func ResponseEncoder(w stdhttp.ResponseWriter, r *stdhttp.Request, v interface{}) error {
+	reply := new(httpResponse)
+	reply.Code = stdhttp.StatusOK
+	reply.Data = v
+	reply.Message = "success"
+	reply.Reason = "success"
+	reply.Ts = time.Now().Format("2006-01-02 15:04:05.00000")
+	codec, _ := http.CodecForRequest(r, "Accept")
+	data, err := codec.Marshal(reply)
+	if err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", contentType(codec.Name()))
+	w.WriteHeader(stdhttp.StatusOK)
+	w.Write(data)
+	return nil
+}

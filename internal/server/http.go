@@ -22,6 +22,9 @@ func NewHTTPServer(c *conf.Config, userService *service.UserService, logger log.
 	var opts = []http.ServerOption{
 		// 自定义错误响应体
 		http.ErrorEncoder(encoder.ErrorEncoder),
+		// 自定义统一的返回体
+		http.ResponseEncoder(encoder.ResponseEncoder),
+		// 中间件
 		http.Middleware(
 			recovery.Recovery(),
 			selector.Server( // jwt 验证
