@@ -4,7 +4,6 @@ import (
 	user "food-server/api/user/v1"
 	"food-server/internal/conf"
 	"food-server/internal/service"
-
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -15,6 +14,7 @@ func NewGRPCServer(c *conf.Config, userService *service.UserService, logger log.
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
+			//logging.Server(logger),
 		),
 	}
 	if c.Server.Grpc.Network != "" {

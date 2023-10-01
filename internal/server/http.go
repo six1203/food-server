@@ -4,6 +4,7 @@ import (
 	"context"
 	user "food-server/api/user/v1"
 	"food-server/internal/conf"
+	"food-server/internal/pkg/encoder"
 	"food-server/internal/service"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -19,6 +20,8 @@ import (
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Config, userService *service.UserService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
+		// 自定义错误响应体
+		http.ErrorEncoder(encoder.ErrorEncoder),
 		http.Middleware(
 			recovery.Recovery(),
 			selector.Server( // jwt 验证
@@ -35,6 +38,7 @@ func NewHTTPServer(c *conf.Config, userService *service.UserService, logger log.
 			handlers.AllowedOrigins([]string{"*"}),
 		)),
 	}
+	opts = append(opts)
 	if c.Server.Http.Network != "" {
 		opts = append(opts, http.Network(c.Server.Http.Network))
 	}
