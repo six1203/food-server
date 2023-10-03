@@ -23,6 +23,24 @@ func NewCollectionShopRepo(data *Data, logger log.Logger) biz.CollectionShopRepo
 	}
 }
 
+func (r *CollectionShopRepo) GetFirstByName(ctx context.Context, category, name string) (*biz.CollectionShop, error) {
+	var shop model.CollectionShop
+	ret := r.data.db.WithContext(ctx).Where("category = ?", category).Where("name = ?", name).First(&shop)
+	if ret.Error != nil {
+		return nil, ret.Error
+	}
+	return &biz.CollectionShop{
+		Id:        shop.ID,
+		Category:  shop.Category,
+		Name:      shop.Name,
+		Logo:      shop.Logo,
+		Address:   shop.Address,
+		CreatedAt: shop.CreatedAt,
+		UpdatedAt: shop.UpdatedAt,
+		Star:      uint32(shop.Star),
+	}, nil
+}
+
 func (r *CollectionShopRepo) ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*biz.CollectionShop, int32, error) {
 	var shops []*model.CollectionShop
 	var total int64
@@ -52,12 +70,13 @@ func (r *CollectionShopRepo) ListCollectionShop(ctx context.Context, page, pageS
 			Address:   shop.Address,
 			CreatedAt: shop.CreatedAt,
 			UpdatedAt: shop.UpdatedAt,
+			Star:      uint32(shop.Star),
 		})
 	}
 	return data, int32(total), nil
 }
 
-func (r *CollectionShopRepo) Save(ctx context.Context, category, name, logo, address string) (*biz.CollectionShop, error) {
+func (r *CollectionShopRepo) Save(ctx context.Context, star uint32, category, name, logo, address string) (*biz.CollectionShop, error) {
 	currentTime := time.Now() // 获取当前时间
 	shop := model.CollectionShop{
 		Category:  category,
@@ -66,6 +85,7 @@ func (r *CollectionShopRepo) Save(ctx context.Context, category, name, logo, add
 		Address:   address,
 		CreatedAt: currentTime,
 		UpdatedAt: currentTime,
+		Star:      int32(star),
 	}
 	result := r.data.db.WithContext(ctx).Create(&shop)
 	if result.Error != nil {
@@ -79,5 +99,6 @@ func (r *CollectionShopRepo) Save(ctx context.Context, category, name, logo, add
 		Address:   shop.Address,
 		CreatedAt: shop.CreatedAt,
 		UpdatedAt: shop.UpdatedAt,
+		Star:      uint32(shop.Star),
 	}, nil
 }

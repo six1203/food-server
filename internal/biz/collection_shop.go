@@ -2,9 +2,12 @@ package biz
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"gorm.io/gorm"
 
 	"food-server/internal/conf"
 )
@@ -17,11 +20,13 @@ type CollectionShop struct {
 	Address   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	Star      uint32
 }
 
 type CollectionShopRepo interface {
 	ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*CollectionShop, int32, error)
-	Save(ctx context.Context, category, name, logo, address string) (*CollectionShop, error)
+	Save(ctx context.Context, star uint32, category, name, logo, address string) (*CollectionShop, error)
+	GetFirstByName(ctx context.Context, category, name string) (*CollectionShop, error)
 }
 
 type CollectionShopUsecase struct {
@@ -38,6 +43,13 @@ func (uc *CollectionShopUsecase) ListCollectionShop(ctx context.Context, page, p
 	return uc.repo.ListCollectionShop(ctx, page, pageSize, fuzzySearchText)
 }
 
-func (uc *CollectionShopUsecase) CreateCollectionShop(ctx context.Context, category, name, logo, address string) (*CollectionShop, error) {
-	return uc.repo.Save(ctx, category, name, logo, address)
+func (uc *CollectionShopUsecase) CreateCollectionShop(ctx context.Context, category, name, logo, address string, star uint32) (*CollectionShop, error) {
+	shop, err := uc.repo.GetFirstByName(ctx, category, name)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return uc.repo.Save(ctx, star, category, name, logo, address)
+	}
+	if shop.Id > 0 {
+		return nil, errors.New(fmt.Sprintf("分类：%s下已收藏门店：%s", category, name))
+	}
+	return nil, err
 }

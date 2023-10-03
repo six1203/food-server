@@ -18,6 +18,7 @@ func convertShop(s *biz.CollectionShop) *pb.CollectionShop {
 		Address:   s.Address,
 		CreatedAt: timestamppb.New(s.CreatedAt),
 		UpdatedAt: timestamppb.New(s.UpdatedAt),
+		Star:      s.Star,
 	}
 }
 
@@ -39,7 +40,7 @@ func (s *FoodService) ListCollectionShop(ctx context.Context, req *pb.ListCollec
 }
 
 func (s *FoodService) CreateCollectionShop(ctx context.Context, req *pb.CreateCollectionShopRequest) (*pb.CreateCollectionShopReply, error) {
-	shop, err := s.cs.CreateCollectionShop(ctx, req.Category, req.Name, req.Logo, req.Address)
+	shop, err := s.cs.CreateCollectionShop(ctx, req.Category, req.Name, req.Logo, req.Address, req.Star)
 	if err != nil {
 		return nil, err
 	}

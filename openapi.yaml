@@ -75,6 +75,9 @@ components:
                     type: string
                 address:
                     type: string
+                star:
+                    type: integer
+                    format: uint32
                 createdAt:
                     type: string
                     format: date-time
@@ -97,6 +100,9 @@ components:
                     type: string
                 address:
                     type: string
+                star:
+                    type: integer
+                    format: uint32
         api.food.v1.ListCollectionShopReply:
             type: object
             properties:

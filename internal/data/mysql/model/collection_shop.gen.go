@@ -22,6 +22,7 @@ type CollectionShop struct {
 	CreatedAt time.Time      `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
+	Star      int32          `gorm:"column:star;not null;default:1;comment:喜欢程度，满级5颗星" json:"star"` // 喜欢程度，满级5颗星
 }
 
 // TableName CollectionShop's table name

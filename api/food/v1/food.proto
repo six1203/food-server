@@ -53,8 +53,9 @@ message CollectionShop {
   string name = 3;
   string logo = 4;
   string address = 5;
-  google.protobuf.Timestamp createdAt = 6;
-  google.protobuf.Timestamp updatedAt = 7;
+  uint32 star = 6;
+  google.protobuf.Timestamp createdAt = 7;
+  google.protobuf.Timestamp updatedAt = 8;
 }
 
 message ListCollectionShopRequest {
@@ -73,6 +74,7 @@ message CreateCollectionShopRequest {
   string name = 2;
   string logo = 3;
   string address = 4;
+  uint32 star = 5;
 }
 
 message CreateCollectionShopReply {
