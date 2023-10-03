@@ -76,7 +76,7 @@ func (r *CollectionShopRepo) ListCollectionShop(ctx context.Context, page, pageS
 	return data, int32(total), nil
 }
 
-func (r *CollectionShopRepo) Save(ctx context.Context, star uint32, category, name, logo, address string) (*biz.CollectionShop, error) {
+func (r *CollectionShopRepo) Create(ctx context.Context, star uint32, category, name, logo, address string) (*biz.CollectionShop, error) {
 	currentTime := time.Now() // 获取当前时间
 	shop := model.CollectionShop{
 		Category:  category,
@@ -101,4 +101,15 @@ func (r *CollectionShopRepo) Save(ctx context.Context, star uint32, category, na
 		UpdatedAt: shop.UpdatedAt,
 		Star:      uint32(shop.Star),
 	}, nil
+}
+
+func (r *CollectionShopRepo) Delete(ctx context.Context, id int64) error {
+	var s model.CollectionShop
+	if err := r.data.db.WithContext(ctx).First(&s, id).Error; err != nil {
+		return err
+	}
+	if err := r.data.db.WithContext(ctx).Model(&s).Update("deleted_at", time.Now()).Error; err != nil {
+		return err
+	}
+	return nil
 }

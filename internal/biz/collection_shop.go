@@ -25,8 +25,9 @@ type CollectionShop struct {
 
 type CollectionShopRepo interface {
 	ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*CollectionShop, int32, error)
-	Save(ctx context.Context, star uint32, category, name, logo, address string) (*CollectionShop, error)
+	Create(ctx context.Context, star uint32, category, name, logo, address string) (*CollectionShop, error)
 	GetFirstByName(ctx context.Context, category, name string) (*CollectionShop, error)
+	Delete(ctx context.Context, id int64) error
 }
 
 type CollectionShopUsecase struct {
@@ -46,10 +47,14 @@ func (uc *CollectionShopUsecase) ListCollectionShop(ctx context.Context, page, p
 func (uc *CollectionShopUsecase) CreateCollectionShop(ctx context.Context, category, name, logo, address string, star uint32) (*CollectionShop, error) {
 	shop, err := uc.repo.GetFirstByName(ctx, category, name)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return uc.repo.Save(ctx, star, category, name, logo, address)
+		return uc.repo.Create(ctx, star, category, name, logo, address)
 	}
 	if shop.Id > 0 {
 		return nil, errors.New(fmt.Sprintf("分类：%s下已收藏门店：%s", category, name))
 	}
 	return nil, err
+}
+
+func (uc *CollectionShopUsecase) RemoveCollectionShop(ctx context.Context, id int64) error {
+	return uc.repo.Delete(ctx, id)
 }

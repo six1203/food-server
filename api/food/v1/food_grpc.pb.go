@@ -22,6 +22,7 @@ const (
 	Food_LoginByUsername_FullMethodName      = "/api.food.v1.Food/LoginByUsername"
 	Food_ListCollectionShop_FullMethodName   = "/api.food.v1.Food/ListCollectionShop"
 	Food_CreateCollectionShop_FullMethodName = "/api.food.v1.Food/CreateCollectionShop"
+	Food_RemoveCollectionShop_FullMethodName = "/api.food.v1.Food/RemoveCollectionShop"
 )
 
 // FoodClient is the client API for Food service.
@@ -31,6 +32,7 @@ type FoodClient interface {
 	LoginByUsername(ctx context.Context, in *LoginByUsernameRequest, opts ...grpc.CallOption) (*LoginByUsernameReply, error)
 	ListCollectionShop(ctx context.Context, in *ListCollectionShopRequest, opts ...grpc.CallOption) (*ListCollectionShopReply, error)
 	CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...grpc.CallOption) (*CreateCollectionShopReply, error)
+	RemoveCollectionShop(ctx context.Context, in *RemoveCollectionShopRequest, opts ...grpc.CallOption) (*RemoveCollectionShopReply, error)
 }
 
 type foodClient struct {
@@ -68,6 +70,15 @@ func (c *foodClient) CreateCollectionShop(ctx context.Context, in *CreateCollect
 	return out, nil
 }
 
+func (c *foodClient) RemoveCollectionShop(ctx context.Context, in *RemoveCollectionShopRequest, opts ...grpc.CallOption) (*RemoveCollectionShopReply, error) {
+	out := new(RemoveCollectionShopReply)
+	err := c.cc.Invoke(ctx, Food_RemoveCollectionShop_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FoodServer is the server API for Food service.
 // All implementations must embed UnimplementedFoodServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type FoodServer interface {
 	LoginByUsername(context.Context, *LoginByUsernameRequest) (*LoginByUsernameReply, error)
 	ListCollectionShop(context.Context, *ListCollectionShopRequest) (*ListCollectionShopReply, error)
 	CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error)
+	RemoveCollectionShop(context.Context, *RemoveCollectionShopRequest) (*RemoveCollectionShopReply, error)
 	mustEmbedUnimplementedFoodServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedFoodServer) ListCollectionShop(context.Context, *ListCollecti
 }
 func (UnimplementedFoodServer) CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCollectionShop not implemented")
+}
+func (UnimplementedFoodServer) RemoveCollectionShop(context.Context, *RemoveCollectionShopRequest) (*RemoveCollectionShopReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveCollectionShop not implemented")
 }
 func (UnimplementedFoodServer) mustEmbedUnimplementedFoodServer() {}
 
@@ -158,6 +173,24 @@ func _Food_CreateCollectionShop_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Food_RemoveCollectionShop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveCollectionShopRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FoodServer).RemoveCollectionShop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Food_RemoveCollectionShop_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FoodServer).RemoveCollectionShop(ctx, req.(*RemoveCollectionShopRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Food_ServiceDesc is the grpc.ServiceDesc for Food service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var Food_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateCollectionShop",
 			Handler:    _Food_CreateCollectionShop_Handler,
+		},
+		{
+			MethodName: "RemoveCollectionShop",
+			Handler:    _Food_RemoveCollectionShop_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

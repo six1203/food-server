@@ -42,6 +42,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.food.v1.ListCollectionShopReply'
+    /v1/collection_shop/remove:
+        post:
+            tags:
+                - Food
+            operationId: Food_RemoveCollectionShop
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.food.v1.RemoveCollectionShopRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.food.v1.RemoveCollectionShopReply'
     /v1/user/login/byUsername:
         post:
             tags:
@@ -135,6 +153,16 @@ components:
                 username:
                     type: string
                 password:
+                    type: string
+        api.food.v1.RemoveCollectionShopReply:
+            type: object
+            properties:
+                result:
+                    type: string
+        api.food.v1.RemoveCollectionShopRequest:
+            type: object
+            properties:
+                id:
                     type: string
         api.food.v1.UserInfo:
             type: object

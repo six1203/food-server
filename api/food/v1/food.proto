@@ -29,6 +29,13 @@ service Food {
       body: "*"
     };
   };
+
+  rpc RemoveCollectionShop (RemoveCollectionShopRequest) returns (RemoveCollectionShopReply) {
+    option (google.api.http) = {
+      post: "/v1/collection_shop/remove"
+      body: "*"
+    };
+  }
 }
 
 message userInfo {
@@ -79,4 +86,12 @@ message CreateCollectionShopRequest {
 
 message CreateCollectionShopReply {
     CollectionShop collectionShop = 1;
+}
+
+message RemoveCollectionShopRequest {
+  int64 id = 1;
+}
+
+message RemoveCollectionShopReply {
+  string result = 1;
 }

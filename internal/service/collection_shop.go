@@ -48,3 +48,13 @@ func (s *FoodService) CreateCollectionShop(ctx context.Context, req *pb.CreateCo
 		CollectionShop: convertShop(shop),
 	}, nil
 }
+
+func (s *FoodService) RemoveCollectionShop(ctx context.Context, req *pb.RemoveCollectionShopRequest) (*pb.RemoveCollectionShopReply, error) {
+	err := s.cs.RemoveCollectionShop(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RemoveCollectionShopReply{
+		Result: "success",
+	}, nil
+}
