@@ -4,17 +4,17 @@ import (
 	"flag"
 	"os"
 
-	"food-server/internal/conf"
-
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
+	"github.com/go-kratos/kratos/v2/encoding/json"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"google.golang.org/protobuf/encoding/protojson"
 
-	_ "go.uber.org/automaxprocs"
+	"food-server/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -31,6 +31,10 @@ var (
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	json.MarshalOptions = protojson.MarshalOptions{
+		EmitUnpopulated: true, //默认值不忽略
+		UseProtoNames:   true, //使用proto name返回http字段
+	}
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {

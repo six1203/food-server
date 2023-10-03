@@ -19,10 +19,12 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationFoodCreateCollectionShop = "/api.food.v1.Food/CreateCollectionShop"
 const OperationFoodListCollectionShop = "/api.food.v1.Food/ListCollectionShop"
 const OperationFoodLoginByUsername = "/api.food.v1.Food/LoginByUsername"
 
 type FoodHTTPServer interface {
+	CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error)
 	ListCollectionShop(context.Context, *ListCollectionShopRequest) (*ListCollectionShopReply, error)
 	LoginByUsername(context.Context, *LoginByUsernameRequest) (*LoginByUsernameReply, error)
 }
@@ -31,6 +33,7 @@ func RegisterFoodHTTPServer(s *http.Server, srv FoodHTTPServer) {
 	r := s.Route("/")
 	r.POST("/v1/user/login/byUsername", _Food_LoginByUsername0_HTTP_Handler(srv))
 	r.POST("/v1/collection_shop/list", _Food_ListCollectionShop0_HTTP_Handler(srv))
+	r.POST("/v1/collection_shop/create", _Food_CreateCollectionShop0_HTTP_Handler(srv))
 }
 
 func _Food_LoginByUsername0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
@@ -77,7 +80,30 @@ func _Food_ListCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Co
 	}
 }
 
+func _Food_CreateCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateCollectionShopRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationFoodCreateCollectionShop)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateCollectionShop(ctx, req.(*CreateCollectionShopRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateCollectionShopReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type FoodHTTPClient interface {
+	CreateCollectionShop(ctx context.Context, req *CreateCollectionShopRequest, opts ...http.CallOption) (rsp *CreateCollectionShopReply, err error)
 	ListCollectionShop(ctx context.Context, req *ListCollectionShopRequest, opts ...http.CallOption) (rsp *ListCollectionShopReply, err error)
 	LoginByUsername(ctx context.Context, req *LoginByUsernameRequest, opts ...http.CallOption) (rsp *LoginByUsernameReply, err error)
 }
@@ -88,6 +114,19 @@ type FoodHTTPClientImpl struct {
 
 func NewFoodHTTPClient(client *http.Client) FoodHTTPClient {
 	return &FoodHTTPClientImpl{client}
+}
+
+func (c *FoodHTTPClientImpl) CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...http.CallOption) (*CreateCollectionShopReply, error) {
+	var out CreateCollectionShopReply
+	pattern := "/v1/collection_shop/create"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationFoodCreateCollectionShop))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *FoodHTTPClientImpl) ListCollectionShop(ctx context.Context, in *ListCollectionShopRequest, opts ...http.CallOption) (*ListCollectionShopReply, error) {

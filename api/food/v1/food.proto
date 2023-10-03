@@ -22,9 +22,14 @@ service Food {
       body: "*"
     };
   };
+
+  rpc CreateCollectionShop (CreateCollectionShopRequest) returns (CreateCollectionShopReply) {
+    option (google.api.http) = {
+      post: "/v1/collection_shop/create"
+      body: "*"
+    };
+  };
 }
-
-
 
 message userInfo {
   int64 id = 1;
@@ -42,7 +47,6 @@ message LoginByUsernameReply {
   userInfo userInfo = 1;
 }
 
-
 message CollectionShop {
   int64 id = 1;
   string category = 2;
@@ -58,7 +62,19 @@ message ListCollectionShopRequest {
   int32 pageSize = 2;
   string fuzzySearchText = 3;
 }
+
 message ListCollectionShopReply {
   int32 total = 1;
   repeated CollectionShop data = 2;
+}
+
+message CreateCollectionShopRequest {
+  string category = 1;
+  string name = 2;
+  string logo = 3;
+  string address = 4;
+}
+
+message CreateCollectionShopReply {
+    CollectionShop collectionShop = 1;
 }

@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Food_LoginByUsername_FullMethodName    = "/api.food.v1.Food/LoginByUsername"
-	Food_ListCollectionShop_FullMethodName = "/api.food.v1.Food/ListCollectionShop"
+	Food_LoginByUsername_FullMethodName      = "/api.food.v1.Food/LoginByUsername"
+	Food_ListCollectionShop_FullMethodName   = "/api.food.v1.Food/ListCollectionShop"
+	Food_CreateCollectionShop_FullMethodName = "/api.food.v1.Food/CreateCollectionShop"
 )
 
 // FoodClient is the client API for Food service.
@@ -29,6 +30,7 @@ const (
 type FoodClient interface {
 	LoginByUsername(ctx context.Context, in *LoginByUsernameRequest, opts ...grpc.CallOption) (*LoginByUsernameReply, error)
 	ListCollectionShop(ctx context.Context, in *ListCollectionShopRequest, opts ...grpc.CallOption) (*ListCollectionShopReply, error)
+	CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...grpc.CallOption) (*CreateCollectionShopReply, error)
 }
 
 type foodClient struct {
@@ -57,12 +59,22 @@ func (c *foodClient) ListCollectionShop(ctx context.Context, in *ListCollectionS
 	return out, nil
 }
 
+func (c *foodClient) CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...grpc.CallOption) (*CreateCollectionShopReply, error) {
+	out := new(CreateCollectionShopReply)
+	err := c.cc.Invoke(ctx, Food_CreateCollectionShop_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FoodServer is the server API for Food service.
 // All implementations must embed UnimplementedFoodServer
 // for forward compatibility
 type FoodServer interface {
 	LoginByUsername(context.Context, *LoginByUsernameRequest) (*LoginByUsernameReply, error)
 	ListCollectionShop(context.Context, *ListCollectionShopRequest) (*ListCollectionShopReply, error)
+	CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error)
 	mustEmbedUnimplementedFoodServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedFoodServer) LoginByUsername(context.Context, *LoginByUsername
 }
 func (UnimplementedFoodServer) ListCollectionShop(context.Context, *ListCollectionShopRequest) (*ListCollectionShopReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCollectionShop not implemented")
+}
+func (UnimplementedFoodServer) CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCollectionShop not implemented")
 }
 func (UnimplementedFoodServer) mustEmbedUnimplementedFoodServer() {}
 
@@ -125,6 +140,24 @@ func _Food_ListCollectionShop_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Food_CreateCollectionShop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCollectionShopRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FoodServer).CreateCollectionShop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Food_CreateCollectionShop_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FoodServer).CreateCollectionShop(ctx, req.(*CreateCollectionShopRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Food_ServiceDesc is the grpc.ServiceDesc for Food service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var Food_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListCollectionShop",
 			Handler:    _Food_ListCollectionShop_Handler,
+		},
+		{
+			MethodName: "CreateCollectionShop",
+			Handler:    _Food_CreateCollectionShop_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

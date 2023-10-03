@@ -1,11 +1,13 @@
 package encoder
 
 import (
-	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/go-kratos/kratos/v2/transport/http"
 	stdhttp "net/http"
 	"strings"
 	"time"
+
+	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/tidwall/sjson"
 )
 
 type httpResponse struct {
@@ -51,12 +53,24 @@ func ResponseEncoder(w stdhttp.ResponseWriter, r *stdhttp.Request, v interface{}
 	reply.Reason = "success"
 	reply.Ts = time.Now().Format("2006-01-02 15:04:05.00000")
 	codec, _ := http.CodecForRequest(r, "Accept")
-	data, err := codec.Marshal(reply)
+	// 解决零值字段因为自定义ResponseEncoder导致json序列化被忽略掉的问题
+	// https://github.com/go-kratos/kratos/issues/1952
+	replyBytes, err := codec.Marshal(reply)
+	if err != nil {
+		return err
+	}
+	jsonRes := string(replyBytes)
+
+	resBytes, err := codec.Marshal(v)
+	if err != nil {
+		return err
+	}
+	raw, err := sjson.SetRaw(jsonRes, "data", string(resBytes))
 	if err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", contentType(codec.Name()))
 	w.WriteHeader(stdhttp.StatusOK)
-	w.Write(data)
+	w.Write([]byte(raw))
 	return nil
 }

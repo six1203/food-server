@@ -2,9 +2,11 @@ package biz
 
 import (
 	"context"
-	"food-server/internal/conf"
+	"time"
+
 	"github.com/go-kratos/kratos/v2/log"
-	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"food-server/internal/conf"
 )
 
 type CollectionShop struct {
@@ -13,12 +15,13 @@ type CollectionShop struct {
 	Name      string
 	Logo      string
 	Address   string
-	CreatedAt *timestamppb.Timestamp
-	UpdatedAt *timestamppb.Timestamp
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type CollectionShopRepo interface {
-	ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*CollectionShop, error)
+	ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*CollectionShop, int32, error)
+	Save(ctx context.Context, category, name, logo, address string) (*CollectionShop, error)
 }
 
 type CollectionShopUsecase struct {
@@ -31,6 +34,10 @@ func NewCollectionShopUsecase(config *conf.Config, repo CollectionShopRepo, logg
 	return &CollectionShopUsecase{config: config, repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *CollectionShopUsecase) ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*CollectionShop, error) {
+func (uc *CollectionShopUsecase) ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*CollectionShop, int32, error) {
 	return uc.repo.ListCollectionShop(ctx, page, pageSize, fuzzySearchText)
+}
+
+func (uc *CollectionShopUsecase) CreateCollectionShop(ctx context.Context, category, name, logo, address string) (*CollectionShop, error) {
+	return uc.repo.Save(ctx, category, name, logo, address)
 }

@@ -2,12 +2,13 @@ package data
 
 import (
 	"context"
-	"food-server/internal/data/mysql/model"
-
-	"food-server/internal/biz"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"food-server/internal/biz"
+	"food-server/internal/data/mysql/model"
+	pagination "food-server/internal/pkg/util"
 )
 
 type CollectionShopRepo struct {
@@ -22,10 +23,24 @@ func NewCollectionShopRepo(data *Data, logger log.Logger) biz.CollectionShopRepo
 	}
 }
 
-func (r *CollectionShopRepo) ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*biz.CollectionShop, error) {
+func (r *CollectionShopRepo) ListCollectionShop(ctx context.Context, page, pageSize int32, fuzzySearchText string) ([]*biz.CollectionShop, int32, error) {
 	var shops []*model.CollectionShop
-	r.data.db.Where("name like ? or category like ? ", "%"+fuzzySearchText+"%", "%"+fuzzySearchText+"%").Limit(int(pageSize)).Offset(int((page - 1) * pageSize)).Find(&shops)
+	var total int64
 
+	db := r.data.db.WithContext(ctx)
+
+	if fuzzySearchText != "" {
+		db = db.Where("name like ? or category like ? ", "%"+fuzzySearchText+"%", "%"+fuzzySearchText+"%")
+	}
+
+	// 第一次查询获取总数
+	if err := db.Model(&model.CollectionShop{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	result := db.Limit(int(pageSize)).Offset(int(pagination.GetPageOffset(page, pageSize))).Find(&shops)
+	if result.Error != nil {
+		return nil, 0, result.Error
+	}
 	var data []*biz.CollectionShop
 
 	for _, shop := range shops {
@@ -35,9 +50,34 @@ func (r *CollectionShopRepo) ListCollectionShop(ctx context.Context, page, pageS
 			Name:      shop.Name,
 			Logo:      shop.Logo,
 			Address:   shop.Address,
-			CreatedAt: timestamppb.New(shop.CreatedAt),
-			UpdatedAt: timestamppb.New(shop.UpdatedAt),
+			CreatedAt: shop.CreatedAt,
+			UpdatedAt: shop.UpdatedAt,
 		})
 	}
-	return data, nil
+	return data, int32(total), nil
+}
+
+func (r *CollectionShopRepo) Save(ctx context.Context, category, name, logo, address string) (*biz.CollectionShop, error) {
+	currentTime := time.Now() // 获取当前时间
+	shop := model.CollectionShop{
+		Category:  category,
+		Name:      name,
+		Logo:      logo,
+		Address:   address,
+		CreatedAt: currentTime,
+		UpdatedAt: currentTime,
+	}
+	result := r.data.db.WithContext(ctx).Create(&shop)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &biz.CollectionShop{
+		Id:        shop.ID,
+		Category:  shop.Category,
+		Name:      shop.Name,
+		Logo:      shop.Logo,
+		Address:   shop.Address,
+		CreatedAt: shop.CreatedAt,
+		UpdatedAt: shop.UpdatedAt,
+	}, nil
 }

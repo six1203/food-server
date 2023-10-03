@@ -6,6 +6,24 @@ info:
     title: Food API
     version: 0.0.1
 paths:
+    /v1/collection_shop/create:
+        post:
+            tags:
+                - Food
+            operationId: Food_CreateCollectionShop
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.food.v1.CreateCollectionShopRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.food.v1.CreateCollectionShopReply'
     /v1/collection_shop/list:
         post:
             tags:
@@ -63,6 +81,22 @@ components:
                 updatedAt:
                     type: string
                     format: date-time
+        api.food.v1.CreateCollectionShopReply:
+            type: object
+            properties:
+                collectionShop:
+                    $ref: '#/components/schemas/api.food.v1.CollectionShop'
+        api.food.v1.CreateCollectionShopRequest:
+            type: object
+            properties:
+                category:
+                    type: string
+                name:
+                    type: string
+                logo:
+                    type: string
+                address:
+                    type: string
         api.food.v1.ListCollectionShopReply:
             type: object
             properties:
