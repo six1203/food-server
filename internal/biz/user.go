@@ -2,10 +2,14 @@ package biz
 
 import (
 	"context"
-	"food-server/internal/conf"
-	"food-server/internal/pkg/middleware/auth"
+	"errors"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"golang.org/x/exp/slices"
+
+	"food-server/internal/conf"
+	"food-server/internal/pkg/middleware/auth"
 )
 
 // User is a User model.
@@ -47,6 +51,12 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, g *User) (*User, error) {
 }
 
 func (uc *UserUsecase) LoginByUsername(ctx context.Context, username, password string) (*LoginUser, error) {
+
+	fmt.Println("================", uc.config.UserBlacklist)
+	if slices.Contains(uc.config.UserBlacklist, username) {
+		return nil, errors.New("user is in blacklist")
+	}
+
 	user, err := uc.repo.FindByUserinfo(ctx, username, password)
 	if err != nil {
 		return nil, err

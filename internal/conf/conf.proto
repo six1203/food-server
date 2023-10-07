@@ -9,6 +9,7 @@ message Config {
   Server server = 1;
   Data data = 2;
   JWT jwt = 3;
+  repeated string userBlacklist = 4;
 }
 
 message Server {
@@ -47,4 +48,8 @@ message Data {
 message JWT {
   string secret = 1;
   int32  expire_duration = 2;
+}
+
+message UserBlacklist {
+
 }

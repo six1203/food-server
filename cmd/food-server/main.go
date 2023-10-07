@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	knacos "github.com/go-kratos/kratos/contrib/config/nacos/v2"
@@ -112,6 +113,14 @@ func main() {
 	var bc conf.Config
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
+	}
+
+	if err := c.Watch("userBlacklist", func(key string, value config.Value) {
+		fmt.Printf("config changed: %s = %v\n", key, value)
+		c.Scan(&bc)
+		// 在这里写回调的逻辑
+	}); err != nil {
+		log.Error(err)
 	}
 
 	app, cleanup, err := wireApp(&bc, logger)

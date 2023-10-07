@@ -1,6 +1,6 @@
 server:
   http:
-    addr: 127.0.0.1:8090
+    addr: 127.0.0.1:8091
     timeout: 1s
   grpc:
     addr: 127.0.0.1:9000
@@ -18,3 +18,5 @@ jwt:
   secret: ToIZET+HX^a4Y$U3B%k{r{Yc=z4{%bi|
   # token过期时间，单位小时
   expire_duration: 24
+userBlacklist: 
+  - test
