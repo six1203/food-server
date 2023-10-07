@@ -60,6 +60,47 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.food.v1.RemoveCollectionShopReply'
+    /v1/collection_shop/{id}:
+        get:
+            tags:
+                - Food
+            operationId: Food_GetCollectionShopById
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.food.v1.GetCollectionShopByIdReply'
+        post:
+            tags:
+                - Food
+            operationId: Food_UpdateCollectionShopById
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.food.v1.UpdateCollectionShopByIdRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.food.v1.UpdateCollectionShopByIdReply'
     /v1/user/login/byUsername:
         post:
             tags:
@@ -121,6 +162,11 @@ components:
                 star:
                     type: integer
                     format: uint32
+        api.food.v1.GetCollectionShopByIdReply:
+            type: object
+            properties:
+                collectionShop:
+                    $ref: '#/components/schemas/api.food.v1.CollectionShop'
         api.food.v1.ListCollectionShopReply:
             type: object
             properties:
@@ -164,6 +210,27 @@ components:
             properties:
                 id:
                     type: string
+        api.food.v1.UpdateCollectionShopByIdReply:
+            type: object
+            properties:
+                collectionShop:
+                    $ref: '#/components/schemas/api.food.v1.CollectionShop'
+        api.food.v1.UpdateCollectionShopByIdRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                category:
+                    type: string
+                name:
+                    type: string
+                logo:
+                    type: string
+                address:
+                    type: string
+                star:
+                    type: integer
+                    format: uint32
         api.food.v1.UserInfo:
             type: object
             properties:

@@ -113,3 +113,45 @@ func (r *CollectionShopRepo) Delete(ctx context.Context, id int64) error {
 	}
 	return nil
 }
+
+func (r *CollectionShopRepo) Get(ctx context.Context, id int64) (*biz.CollectionShop, error) {
+	var shop model.CollectionShop
+	if err := r.data.db.WithContext(ctx).First(&shop, id).Error; err != nil {
+		return nil, err
+	}
+	return &biz.CollectionShop{
+		Id:        shop.ID,
+		Category:  shop.Category,
+		Name:      shop.Name,
+		Logo:      shop.Logo,
+		Address:   shop.Address,
+		CreatedAt: shop.CreatedAt,
+		UpdatedAt: shop.UpdatedAt,
+		Star:      uint32(shop.Star),
+	}, nil
+}
+
+func (r *CollectionShopRepo) Update(ctx context.Context, id int64, star uint32, category, name, logo, address string) (*biz.CollectionShop, error) {
+	var shop model.CollectionShop
+	if err := r.data.db.WithContext(ctx).First(&shop, id).Error; err != nil {
+		return nil, err
+	}
+	shop.Category = category
+	shop.Star = int32(star)
+	shop.Name = name
+	shop.Logo = logo
+	shop.Address = address
+	shop.UpdatedAt = time.Now()
+	r.data.db.Save(&shop)
+
+	return &biz.CollectionShop{
+		Id:        shop.ID,
+		Category:  shop.Category,
+		Name:      shop.Name,
+		Logo:      shop.Logo,
+		Address:   shop.Address,
+		CreatedAt: shop.CreatedAt,
+		UpdatedAt: shop.UpdatedAt,
+		Star:      uint32(shop.Star),
+	}, nil
+}

@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Food_LoginByUsername_FullMethodName      = "/api.food.v1.Food/LoginByUsername"
-	Food_ListCollectionShop_FullMethodName   = "/api.food.v1.Food/ListCollectionShop"
-	Food_CreateCollectionShop_FullMethodName = "/api.food.v1.Food/CreateCollectionShop"
-	Food_RemoveCollectionShop_FullMethodName = "/api.food.v1.Food/RemoveCollectionShop"
+	Food_LoginByUsername_FullMethodName          = "/api.food.v1.Food/LoginByUsername"
+	Food_ListCollectionShop_FullMethodName       = "/api.food.v1.Food/ListCollectionShop"
+	Food_CreateCollectionShop_FullMethodName     = "/api.food.v1.Food/CreateCollectionShop"
+	Food_RemoveCollectionShop_FullMethodName     = "/api.food.v1.Food/RemoveCollectionShop"
+	Food_GetCollectionShopById_FullMethodName    = "/api.food.v1.Food/GetCollectionShopById"
+	Food_UpdateCollectionShopById_FullMethodName = "/api.food.v1.Food/UpdateCollectionShopById"
 )
 
 // FoodClient is the client API for Food service.
@@ -33,6 +35,8 @@ type FoodClient interface {
 	ListCollectionShop(ctx context.Context, in *ListCollectionShopRequest, opts ...grpc.CallOption) (*ListCollectionShopReply, error)
 	CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...grpc.CallOption) (*CreateCollectionShopReply, error)
 	RemoveCollectionShop(ctx context.Context, in *RemoveCollectionShopRequest, opts ...grpc.CallOption) (*RemoveCollectionShopReply, error)
+	GetCollectionShopById(ctx context.Context, in *GetCollectionShopByIdRequest, opts ...grpc.CallOption) (*GetCollectionShopByIdReply, error)
+	UpdateCollectionShopById(ctx context.Context, in *UpdateCollectionShopByIdRequest, opts ...grpc.CallOption) (*UpdateCollectionShopByIdReply, error)
 }
 
 type foodClient struct {
@@ -79,6 +83,24 @@ func (c *foodClient) RemoveCollectionShop(ctx context.Context, in *RemoveCollect
 	return out, nil
 }
 
+func (c *foodClient) GetCollectionShopById(ctx context.Context, in *GetCollectionShopByIdRequest, opts ...grpc.CallOption) (*GetCollectionShopByIdReply, error) {
+	out := new(GetCollectionShopByIdReply)
+	err := c.cc.Invoke(ctx, Food_GetCollectionShopById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *foodClient) UpdateCollectionShopById(ctx context.Context, in *UpdateCollectionShopByIdRequest, opts ...grpc.CallOption) (*UpdateCollectionShopByIdReply, error) {
+	out := new(UpdateCollectionShopByIdReply)
+	err := c.cc.Invoke(ctx, Food_UpdateCollectionShopById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FoodServer is the server API for Food service.
 // All implementations must embed UnimplementedFoodServer
 // for forward compatibility
@@ -87,6 +109,8 @@ type FoodServer interface {
 	ListCollectionShop(context.Context, *ListCollectionShopRequest) (*ListCollectionShopReply, error)
 	CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error)
 	RemoveCollectionShop(context.Context, *RemoveCollectionShopRequest) (*RemoveCollectionShopReply, error)
+	GetCollectionShopById(context.Context, *GetCollectionShopByIdRequest) (*GetCollectionShopByIdReply, error)
+	UpdateCollectionShopById(context.Context, *UpdateCollectionShopByIdRequest) (*UpdateCollectionShopByIdReply, error)
 	mustEmbedUnimplementedFoodServer()
 }
 
@@ -105,6 +129,12 @@ func (UnimplementedFoodServer) CreateCollectionShop(context.Context, *CreateColl
 }
 func (UnimplementedFoodServer) RemoveCollectionShop(context.Context, *RemoveCollectionShopRequest) (*RemoveCollectionShopReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveCollectionShop not implemented")
+}
+func (UnimplementedFoodServer) GetCollectionShopById(context.Context, *GetCollectionShopByIdRequest) (*GetCollectionShopByIdReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCollectionShopById not implemented")
+}
+func (UnimplementedFoodServer) UpdateCollectionShopById(context.Context, *UpdateCollectionShopByIdRequest) (*UpdateCollectionShopByIdReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollectionShopById not implemented")
 }
 func (UnimplementedFoodServer) mustEmbedUnimplementedFoodServer() {}
 
@@ -191,6 +221,42 @@ func _Food_RemoveCollectionShop_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Food_GetCollectionShopById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCollectionShopByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FoodServer).GetCollectionShopById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Food_GetCollectionShopById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FoodServer).GetCollectionShopById(ctx, req.(*GetCollectionShopByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Food_UpdateCollectionShopById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCollectionShopByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FoodServer).UpdateCollectionShopById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Food_UpdateCollectionShopById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FoodServer).UpdateCollectionShopById(ctx, req.(*UpdateCollectionShopByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Food_ServiceDesc is the grpc.ServiceDesc for Food service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +279,14 @@ var Food_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveCollectionShop",
 			Handler:    _Food_RemoveCollectionShop_Handler,
+		},
+		{
+			MethodName: "GetCollectionShopById",
+			Handler:    _Food_GetCollectionShopById_Handler,
+		},
+		{
+			MethodName: "UpdateCollectionShopById",
+			Handler:    _Food_UpdateCollectionShopById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

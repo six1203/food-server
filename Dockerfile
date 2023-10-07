@@ -1,24 +1,23 @@
 FROM golang:1.19 AS builder
-
 COPY . /src
 WORKDIR /src
+ENV GO111MODULE=on GOPROXY=https://goproxy.cn,direct
+RUN make build
 
-RUN GOPROXY=https://goproxy.cn make build
 
-FROM debian:stable-slim
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		ca-certificates  \
-        netbase \
-        && rm -rf /var/lib/apt/lists/ \
-        && apt-get autoremove -y && apt-get autoclean -y
-
-COPY --from=builder /src/bin /app
-
+FROM ubuntu:18.04
 WORKDIR /app
-
+ENV TZ=Asia/Shanghai
+COPY --from=builder /src/bin /app
+RUN sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
+    && sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list
+RUN apt update \
+    && apt install -y tzdata \
+    && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
+    && rm -rf /var/lib/apt/lists/*
 EXPOSE 8000
 EXPOSE 9000
 VOLUME /data/conf
-
-CMD ["./server", "-conf", "/data/conf"]
+CMD ["./food-server", "-conf", "/data/conf"]

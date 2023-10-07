@@ -4,14 +4,17 @@ import (
 	"flag"
 	"os"
 
+	knacos "github.com/go-kratos/kratos/contrib/config/nacos/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/encoding/json"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/nacos-group/nacos-sdk-go/clients"
+	"github.com/nacos-group/nacos-sdk-go/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/vo"
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"food-server/internal/conf"
@@ -24,13 +27,16 @@ var (
 	// Version is the version of the compiled software.
 	Version = "v1"
 	// flagconf is the config flag.
-	flagconf string
+	//flagconf string
 
 	id, _ = os.Hostname()
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	// 设置配置文件路径
+	//flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+
+	// json序列化配置
 	json.MarshalOptions = protojson.MarshalOptions{
 		EmitUnpopulated: true, //默认值不忽略
 		UseProtoNames:   true, //使用proto name返回http字段
@@ -62,9 +68,39 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
+	// 设置nacos配置中心
+	sc := []constant.ServerConfig{
+		*constant.NewServerConfig("127.0.0.1", 8848),
+	}
+
+	cc := &constant.ClientConfig{
+		NamespaceId:         "public",
+		TimeoutMs:           5000,
+		NotLoadCacheAtStart: true,
+		LogDir:              "../../configs/nacos/log",
+		CacheDir:            "../../configs/nacos/cache",
+		LogLevel:            "debug",
+	}
+
+	client, err := clients.NewConfigClient(
+		vo.NacosClientParam{
+			ClientConfig:  cc,
+			ServerConfigs: sc,
+		},
+	)
+
+	if err != nil {
+		panic(err)
+	}
 	c := config.New(
+		//config.WithSource(
+		//file.NewSource(flagconf)),
 		config.WithSource(
-			file.NewSource(flagconf),
+			knacos.NewConfigSource(
+				client,
+				knacos.WithGroup("DEFAULT_GROUP"),
+				knacos.WithDataID("dev.yaml"),
+			),
 		),
 	)
 	defer c.Close()

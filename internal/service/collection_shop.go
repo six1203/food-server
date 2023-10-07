@@ -58,3 +58,23 @@ func (s *FoodService) RemoveCollectionShop(ctx context.Context, req *pb.RemoveCo
 		Result: "success",
 	}, nil
 }
+
+func (s *FoodService) GetCollectionShopById(ctx context.Context, req *pb.GetCollectionShopByIdRequest) (*pb.GetCollectionShopByIdReply, error) {
+	shop, err := s.cs.GetCollectionShopById(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetCollectionShopByIdReply{
+		CollectionShop: convertShop(shop),
+	}, nil
+}
+
+func (s *FoodService) UpdateCollectionShopById(ctx context.Context, req *pb.UpdateCollectionShopByIdRequest) (*pb.UpdateCollectionShopByIdReply, error) {
+	shop, err := s.cs.UpdateCollectionShopById(ctx, req.Id, req.Star, req.Category, req.Name, req.Logo, req.Address)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UpdateCollectionShopByIdReply{
+		CollectionShop: convertShop(shop),
+	}, nil
+}

@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    platform: linux/amd64
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'food'
+      MYSQL_USER: 'food'
+      MYSQL_PASSWORD: '123456'
+    volumes:
+      - '~/mycontainer/mysql:/var/lib/mysql'
+      - '/etc/localtime:/etc/localtime:ro'
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    platform: linux/amd64
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+
+  food_server:
+    build:
+      context: "."
+      dockerfile: "Dockerfile"
+    image: food-server:latest
+    container_name: food-server
+    platform: linux/amd64
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8090:8090"
+      - "9000:9000"
+    volumes:
+      - "./configs:/data/conf"

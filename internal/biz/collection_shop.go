@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -28,6 +29,8 @@ type CollectionShopRepo interface {
 	Create(ctx context.Context, star uint32, category, name, logo, address string) (*CollectionShop, error)
 	GetFirstByName(ctx context.Context, category, name string) (*CollectionShop, error)
 	Delete(ctx context.Context, id int64) error
+	Get(ctx context.Context, id int64) (*CollectionShop, error)
+	Update(ctx context.Context, id int64, star uint32, category, name, logo, address string) (*CollectionShop, error)
 }
 
 type CollectionShopUsecase struct {
@@ -57,4 +60,19 @@ func (uc *CollectionShopUsecase) CreateCollectionShop(ctx context.Context, categ
 
 func (uc *CollectionShopUsecase) RemoveCollectionShop(ctx context.Context, id int64) error {
 	return uc.repo.Delete(ctx, id)
+}
+
+func (uc *CollectionShopUsecase) GetCollectionShopById(ctx context.Context, id int64) (*CollectionShop, error) {
+	return uc.repo.Get(ctx, id)
+}
+
+func isBetween1And5(n int) bool {
+	return n >= 1 && n <= 5 && float64(n) == math.Floor(float64(n))
+}
+
+func (uc *CollectionShopUsecase) UpdateCollectionShopById(ctx context.Context, id int64, star uint32, category, name, logo, address string) (*CollectionShop, error) {
+	if !isBetween1And5(int(star)) {
+		return nil, errors.New("评分范围为1-5")
+	}
+	return uc.repo.Update(ctx, id, star, category, name, logo, address)
 }

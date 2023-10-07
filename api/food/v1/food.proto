@@ -35,7 +35,20 @@ service Food {
       post: "/v1/collection_shop/remove"
       body: "*"
     };
-  }
+  };
+
+  rpc GetCollectionShopById (GetCollectionShopByIdRequest) returns (GetCollectionShopByIdReply) {
+    option (google.api.http) = {
+      get: "/v1/collection_shop/{id}"
+    };
+  };
+
+  rpc UpdateCollectionShopById (UpdateCollectionShopByIdRequest) returns (UpdateCollectionShopByIdReply) {
+    option (google.api.http) = {
+      post: "/v1/collection_shop/{id}"
+      body: "*"
+    };
+  };
 }
 
 message userInfo {
@@ -94,4 +107,25 @@ message RemoveCollectionShopRequest {
 
 message RemoveCollectionShopReply {
   string result = 1;
+}
+
+message GetCollectionShopByIdRequest {
+  int64 id = 1;
+}
+
+message GetCollectionShopByIdReply {
+  CollectionShop collectionShop = 1;
+}
+
+message UpdateCollectionShopByIdRequest {
+  int64 id = 1;
+  string category = 2;
+  string name = 3;
+  string logo = 4;
+  string address = 5;
+  uint32 star = 6;
+}
+
+message UpdateCollectionShopByIdReply {
+  CollectionShop collectionShop = 1;
 }
