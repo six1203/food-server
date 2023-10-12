@@ -2,17 +2,19 @@ package server
 
 import (
 	"context"
-	food "food-server/api/food/v1"
-	"food-server/internal/conf"
-	"food-server/internal/pkg/encoder"
-	"food-server/internal/pkg/middleware/auth"
-	"food-server/internal/service"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/gorilla/handlers"
+
+	food "food-server/api/food/v1"
+	"food-server/internal/conf"
+	"food-server/internal/pkg/encoder"
+	"food-server/internal/pkg/middleware/auth"
+	"food-server/internal/service"
 )
 
 // NewHTTPServer new an HTTP server.
@@ -31,9 +33,9 @@ func NewHTTPServer(c *conf.Config, s *service.FoodService, logger log.Logger) *h
 		),
 		// 浏览器跨域
 		http.Filter(handlers.CORS(
-			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
-			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
 			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		)),
 	}
 	opts = append(opts)

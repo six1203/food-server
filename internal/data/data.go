@@ -1,7 +1,7 @@
 package data
 
 import (
-	"food-server/internal/conf"
+	slog "log"
 	"os"
 	"time"
 
@@ -9,11 +9,13 @@ import (
 	"github.com/go-redis/redis/extra/redisotel"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
+	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	slog "log"
+
+	"food-server/internal/conf"
 )
 
 // ProviderSet is data providers.
@@ -21,8 +23,9 @@ var ProviderSet = wire.NewSet(NewData, NewDB, NewRedis, NewUserRepo, NewCollecti
 
 // Data .
 type Data struct {
-	db  *gorm.DB
-	rdb *redis.Client
+	db    *gorm.DB
+	rdb   *redis.Client
+	nacos config_client.IConfigClient
 }
 
 // NewData .
@@ -76,3 +79,31 @@ func NewRedis(c *conf.Config) *redis.Client {
 	}
 	return rdb
 }
+
+//func NewNacos(c *conf.Config) config_client.IConfigClient {
+//
+//	// 设置nacos配置中心
+//	sc := []constant.ServerConfig{
+//		*constant.NewServerConfig("127.0.0.1", 8848),
+//	}
+//
+//	cc := &constant.ClientConfig{
+//		NamespaceId:         "public",
+//		TimeoutMs:           5000,
+//		NotLoadCacheAtStart: true,
+//		LogDir:              "../../configs/nacos/log",
+//		CacheDir:            "../../configs/nacos/cache",
+//		LogLevel:            "debug",
+//	}
+//
+//	client, err := clients.NewConfigClient(
+//		vo.NacosClientParam{
+//			ClientConfig:  cc,
+//			ServerConfigs: sc,
+//		},
+//	)
+//	if err != nil {
+//		panic(err)
+//	}
+//	return client
+//}

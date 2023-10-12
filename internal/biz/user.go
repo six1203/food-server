@@ -3,7 +3,6 @@ package biz
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"golang.org/x/exp/slices"
@@ -51,8 +50,8 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, g *User) (*User, error) {
 }
 
 func (uc *UserUsecase) LoginByUsername(ctx context.Context, username, password string) (*LoginUser, error) {
+	uc.log.WithContext(ctx).Infof("LoginByUsername: %v", username)
 
-	fmt.Println("================", uc.config.UserBlacklist)
 	if slices.Contains(uc.config.UserBlacklist, username) {
 		return nil, errors.New("user is in blacklist")
 	}

@@ -3,10 +3,10 @@ package data
 import (
 	"context"
 
-	"food-server/internal/biz"
-
-	"food-server/internal/data/mysql/model"
 	"github.com/go-kratos/kratos/v2/log"
+
+	"food-server/internal/biz"
+	"food-server/internal/data/mysql/model"
 )
 
 type userRepo struct {

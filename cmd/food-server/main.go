@@ -69,6 +69,7 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
+
 	// 设置nacos配置中心
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig("127.0.0.1", 8848),
@@ -89,10 +90,10 @@ func main() {
 			ServerConfigs: sc,
 		},
 	)
-
 	if err != nil {
 		panic(err)
 	}
+
 	c := config.New(
 		//config.WithSource(
 		//file.NewSource(flagconf)),

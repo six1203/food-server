@@ -18,3 +18,5 @@ jwt:
   secret: ToIZET+HX^a4Y$U3B%k{r{Yc=z4{%bi|
   # token过期时间，单位小时
   expire_duration: 24
+trace:
+  endpoint: http://127.0.0.1:14268/api/traces
