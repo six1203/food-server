@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Food API
+    title: ""
     version: 0.0.1
 paths:
     /v1/collection_shop/create:
         post:
             tags:
-                - Food
-            operationId: Food_CreateCollectionShop
+                - ShopService
+            operationId: ShopService_CreateCollectionShop
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.food.v1.CreateCollectionShopRequest'
+                            $ref: '#/components/schemas/api.food.v1.shop.CreateCollectionShopRequest'
                 required: true
             responses:
                 "200":
@@ -23,17 +23,17 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.food.v1.CreateCollectionShopReply'
+                                $ref: '#/components/schemas/api.food.v1.shop.CreateCollectionShopReply'
     /v1/collection_shop/list:
         post:
             tags:
-                - Food
-            operationId: Food_ListCollectionShop
+                - ShopService
+            operationId: ShopService_ListCollectionShop
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.food.v1.ListCollectionShopRequest'
+                            $ref: '#/components/schemas/api.food.v1.shop.ListCollectionShopRequest'
                 required: true
             responses:
                 "200":
@@ -41,17 +41,17 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.food.v1.ListCollectionShopReply'
+                                $ref: '#/components/schemas/api.food.v1.shop.ListCollectionShopReply'
     /v1/collection_shop/remove:
         post:
             tags:
-                - Food
-            operationId: Food_RemoveCollectionShop
+                - ShopService
+            operationId: ShopService_RemoveCollectionShop
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.food.v1.RemoveCollectionShopRequest'
+                            $ref: '#/components/schemas/api.food.v1.shop.RemoveCollectionShopRequest'
                 required: true
             responses:
                 "200":
@@ -59,12 +59,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.food.v1.RemoveCollectionShopReply'
+                                $ref: '#/components/schemas/api.food.v1.shop.RemoveCollectionShopReply'
     /v1/collection_shop/{id}:
         get:
             tags:
-                - Food
-            operationId: Food_GetCollectionShopById
+                - ShopService
+            operationId: ShopService_GetCollectionShopById
             parameters:
                 - name: id
                   in: path
@@ -77,11 +77,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.food.v1.GetCollectionShopByIdReply'
+                                $ref: '#/components/schemas/api.food.v1.shop.GetCollectionShopByIdReply'
         post:
             tags:
-                - Food
-            operationId: Food_UpdateCollectionShopById
+                - ShopService
+            operationId: ShopService_UpdateCollectionShopById
             parameters:
                 - name: id
                   in: path
@@ -92,7 +92,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.food.v1.UpdateCollectionShopByIdRequest'
+                            $ref: '#/components/schemas/api.food.v1.shop.UpdateCollectionShopByIdRequest'
                 required: true
             responses:
                 "200":
@@ -100,17 +100,17 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.food.v1.UpdateCollectionShopByIdReply'
+                                $ref: '#/components/schemas/api.food.v1.shop.UpdateCollectionShopByIdReply'
     /v1/user/login/byUsername:
         post:
             tags:
-                - Food
-            operationId: Food_LoginByUsername
+                - UserService
+            operationId: UserService_LoginByUsername
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.food.v1.LoginByUsernameRequest'
+                            $ref: '#/components/schemas/api.food.v1.user.LoginByUsernameRequest'
                 required: true
             responses:
                 "200":
@@ -118,10 +118,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.food.v1.LoginByUsernameReply'
+                                $ref: '#/components/schemas/api.food.v1.user.LoginByUsernameReply'
 components:
     schemas:
-        api.food.v1.CollectionShop:
+        api.food.v1.shop.CollectionShop:
             type: object
             properties:
                 id:
@@ -143,12 +143,12 @@ components:
                 updatedAt:
                     type: string
                     format: date-time
-        api.food.v1.CreateCollectionShopReply:
+        api.food.v1.shop.CreateCollectionShopReply:
             type: object
             properties:
                 collectionShop:
-                    $ref: '#/components/schemas/api.food.v1.CollectionShop'
-        api.food.v1.CreateCollectionShopRequest:
+                    $ref: '#/components/schemas/api.food.v1.shop.CollectionShop'
+        api.food.v1.shop.CreateCollectionShopRequest:
             type: object
             properties:
                 category:
@@ -162,12 +162,12 @@ components:
                 star:
                     type: integer
                     format: uint32
-        api.food.v1.GetCollectionShopByIdReply:
+        api.food.v1.shop.GetCollectionShopByIdReply:
             type: object
             properties:
                 collectionShop:
-                    $ref: '#/components/schemas/api.food.v1.CollectionShop'
-        api.food.v1.ListCollectionShopReply:
+                    $ref: '#/components/schemas/api.food.v1.shop.CollectionShop'
+        api.food.v1.shop.ListCollectionShopReply:
             type: object
             properties:
                 total:
@@ -176,8 +176,8 @@ components:
                 data:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.food.v1.CollectionShop'
-        api.food.v1.ListCollectionShopRequest:
+                        $ref: '#/components/schemas/api.food.v1.shop.CollectionShop'
+        api.food.v1.shop.ListCollectionShopRequest:
             type: object
             properties:
                 page:
@@ -188,34 +188,22 @@ components:
                     format: int32
                 fuzzySearchText:
                     type: string
-        api.food.v1.LoginByUsernameReply:
-            type: object
-            properties:
-                userInfo:
-                    $ref: '#/components/schemas/api.food.v1.UserInfo'
-        api.food.v1.LoginByUsernameRequest:
-            type: object
-            properties:
-                username:
-                    type: string
-                password:
-                    type: string
-        api.food.v1.RemoveCollectionShopReply:
+        api.food.v1.shop.RemoveCollectionShopReply:
             type: object
             properties:
                 result:
                     type: string
-        api.food.v1.RemoveCollectionShopRequest:
+        api.food.v1.shop.RemoveCollectionShopRequest:
             type: object
             properties:
                 id:
                     type: string
-        api.food.v1.UpdateCollectionShopByIdReply:
+        api.food.v1.shop.UpdateCollectionShopByIdReply:
             type: object
             properties:
                 collectionShop:
-                    $ref: '#/components/schemas/api.food.v1.CollectionShop'
-        api.food.v1.UpdateCollectionShopByIdRequest:
+                    $ref: '#/components/schemas/api.food.v1.shop.CollectionShop'
+        api.food.v1.shop.UpdateCollectionShopByIdRequest:
             type: object
             properties:
                 id:
@@ -231,7 +219,19 @@ components:
                 star:
                     type: integer
                     format: uint32
-        api.food.v1.UserInfo:
+        api.food.v1.user.LoginByUsernameReply:
+            type: object
+            properties:
+                userInfo:
+                    $ref: '#/components/schemas/api.food.v1.user.UserInfo'
+        api.food.v1.user.LoginByUsernameRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+        api.food.v1.user.UserInfo:
             type: object
             properties:
                 id:
@@ -243,4 +243,5 @@ components:
                 token:
                     type: string
 tags:
-    - name: Food
+    - name: ShopService
+    - name: UserService

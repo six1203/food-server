@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -49,7 +50,8 @@ func NewHTTPServer(c *conf.Config, s *service.FoodService, logger log.Logger) *h
 		opts = append(opts, http.Timeout(c.Server.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	food.RegisterFoodHTTPServer(srv, s)
+	food.RegisterUserServiceHTTPServer(srv, s.Us)
+	food.RegisterShopServiceHTTPServer(srv, s.Ss)
 	return srv
 }
 
@@ -57,9 +59,9 @@ func NewHTTPServer(c *conf.Config, s *service.FoodService, logger log.Logger) *h
 func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList := make(map[string]struct{})
 	// 注意这里的路径不是接口的path，而是接口的完整路径
-	whiteList["/api.food.v1.Food/LoginByUsername"] = struct{}{}
+	whiteList["/api.food.v1.user.UserService/LoginByUsername"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {
-		//fmt.Printf("operation================>%v", operation)
+		fmt.Printf("operation================>%v", operation)
 		if _, ok := whiteList[operation]; ok {
 			return false
 		}

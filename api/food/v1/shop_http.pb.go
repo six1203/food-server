@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.7.0
 // - protoc             v4.24.3
-// source: food/v1/food.proto
+// source: food/v1/shop.proto
 
 package v1
 
@@ -19,55 +19,30 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationFoodCreateCollectionShop = "/api.food.v1.Food/CreateCollectionShop"
-const OperationFoodGetCollectionShopById = "/api.food.v1.Food/GetCollectionShopById"
-const OperationFoodListCollectionShop = "/api.food.v1.Food/ListCollectionShop"
-const OperationFoodLoginByUsername = "/api.food.v1.Food/LoginByUsername"
-const OperationFoodRemoveCollectionShop = "/api.food.v1.Food/RemoveCollectionShop"
-const OperationFoodUpdateCollectionShopById = "/api.food.v1.Food/UpdateCollectionShopById"
+const OperationShopServiceCreateCollectionShop = "/api.food.v1.shop.ShopService/CreateCollectionShop"
+const OperationShopServiceGetCollectionShopById = "/api.food.v1.shop.ShopService/GetCollectionShopById"
+const OperationShopServiceListCollectionShop = "/api.food.v1.shop.ShopService/ListCollectionShop"
+const OperationShopServiceRemoveCollectionShop = "/api.food.v1.shop.ShopService/RemoveCollectionShop"
+const OperationShopServiceUpdateCollectionShopById = "/api.food.v1.shop.ShopService/UpdateCollectionShopById"
 
-type FoodHTTPServer interface {
+type ShopServiceHTTPServer interface {
 	CreateCollectionShop(context.Context, *CreateCollectionShopRequest) (*CreateCollectionShopReply, error)
 	GetCollectionShopById(context.Context, *GetCollectionShopByIdRequest) (*GetCollectionShopByIdReply, error)
 	ListCollectionShop(context.Context, *ListCollectionShopRequest) (*ListCollectionShopReply, error)
-	LoginByUsername(context.Context, *LoginByUsernameRequest) (*LoginByUsernameReply, error)
 	RemoveCollectionShop(context.Context, *RemoveCollectionShopRequest) (*RemoveCollectionShopReply, error)
 	UpdateCollectionShopById(context.Context, *UpdateCollectionShopByIdRequest) (*UpdateCollectionShopByIdReply, error)
 }
 
-func RegisterFoodHTTPServer(s *http.Server, srv FoodHTTPServer) {
+func RegisterShopServiceHTTPServer(s *http.Server, srv ShopServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/v1/user/login/byUsername", _Food_LoginByUsername0_HTTP_Handler(srv))
-	r.POST("/v1/collection_shop/list", _Food_ListCollectionShop0_HTTP_Handler(srv))
-	r.POST("/v1/collection_shop/create", _Food_CreateCollectionShop0_HTTP_Handler(srv))
-	r.POST("/v1/collection_shop/remove", _Food_RemoveCollectionShop0_HTTP_Handler(srv))
-	r.GET("/v1/collection_shop/{id}", _Food_GetCollectionShopById0_HTTP_Handler(srv))
-	r.POST("/v1/collection_shop/{id}", _Food_UpdateCollectionShopById0_HTTP_Handler(srv))
+	r.POST("/v1/collection_shop/list", _ShopService_ListCollectionShop0_HTTP_Handler(srv))
+	r.POST("/v1/collection_shop/create", _ShopService_CreateCollectionShop0_HTTP_Handler(srv))
+	r.POST("/v1/collection_shop/remove", _ShopService_RemoveCollectionShop0_HTTP_Handler(srv))
+	r.GET("/v1/collection_shop/{id}", _ShopService_GetCollectionShopById0_HTTP_Handler(srv))
+	r.POST("/v1/collection_shop/{id}", _ShopService_UpdateCollectionShopById0_HTTP_Handler(srv))
 }
 
-func _Food_LoginByUsername0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in LoginByUsernameRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationFoodLoginByUsername)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.LoginByUsername(ctx, req.(*LoginByUsernameRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*LoginByUsernameReply)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _Food_ListCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
+func _ShopService_ListCollectionShop0_HTTP_Handler(srv ShopServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListCollectionShopRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -76,7 +51,7 @@ func _Food_ListCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Co
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationFoodListCollectionShop)
+		http.SetOperation(ctx, OperationShopServiceListCollectionShop)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ListCollectionShop(ctx, req.(*ListCollectionShopRequest))
 		})
@@ -89,7 +64,7 @@ func _Food_ListCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Co
 	}
 }
 
-func _Food_CreateCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
+func _ShopService_CreateCollectionShop0_HTTP_Handler(srv ShopServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateCollectionShopRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -98,7 +73,7 @@ func _Food_CreateCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationFoodCreateCollectionShop)
+		http.SetOperation(ctx, OperationShopServiceCreateCollectionShop)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateCollectionShop(ctx, req.(*CreateCollectionShopRequest))
 		})
@@ -111,7 +86,7 @@ func _Food_CreateCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.
 	}
 }
 
-func _Food_RemoveCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
+func _ShopService_RemoveCollectionShop0_HTTP_Handler(srv ShopServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in RemoveCollectionShopRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -120,7 +95,7 @@ func _Food_RemoveCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationFoodRemoveCollectionShop)
+		http.SetOperation(ctx, OperationShopServiceRemoveCollectionShop)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.RemoveCollectionShop(ctx, req.(*RemoveCollectionShopRequest))
 		})
@@ -133,7 +108,7 @@ func _Food_RemoveCollectionShop0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.
 	}
 }
 
-func _Food_GetCollectionShopById0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
+func _ShopService_GetCollectionShopById0_HTTP_Handler(srv ShopServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetCollectionShopByIdRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -142,7 +117,7 @@ func _Food_GetCollectionShopById0_HTTP_Handler(srv FoodHTTPServer) func(ctx http
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationFoodGetCollectionShopById)
+		http.SetOperation(ctx, OperationShopServiceGetCollectionShopById)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCollectionShopById(ctx, req.(*GetCollectionShopByIdRequest))
 		})
@@ -155,7 +130,7 @@ func _Food_GetCollectionShopById0_HTTP_Handler(srv FoodHTTPServer) func(ctx http
 	}
 }
 
-func _Food_UpdateCollectionShopById0_HTTP_Handler(srv FoodHTTPServer) func(ctx http.Context) error {
+func _ShopService_UpdateCollectionShopById0_HTTP_Handler(srv ShopServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UpdateCollectionShopByIdRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -167,7 +142,7 @@ func _Food_UpdateCollectionShopById0_HTTP_Handler(srv FoodHTTPServer) func(ctx h
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationFoodUpdateCollectionShopById)
+		http.SetOperation(ctx, OperationShopServiceUpdateCollectionShopById)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateCollectionShopById(ctx, req.(*UpdateCollectionShopByIdRequest))
 		})
@@ -180,28 +155,27 @@ func _Food_UpdateCollectionShopById0_HTTP_Handler(srv FoodHTTPServer) func(ctx h
 	}
 }
 
-type FoodHTTPClient interface {
+type ShopServiceHTTPClient interface {
 	CreateCollectionShop(ctx context.Context, req *CreateCollectionShopRequest, opts ...http.CallOption) (rsp *CreateCollectionShopReply, err error)
 	GetCollectionShopById(ctx context.Context, req *GetCollectionShopByIdRequest, opts ...http.CallOption) (rsp *GetCollectionShopByIdReply, err error)
 	ListCollectionShop(ctx context.Context, req *ListCollectionShopRequest, opts ...http.CallOption) (rsp *ListCollectionShopReply, err error)
-	LoginByUsername(ctx context.Context, req *LoginByUsernameRequest, opts ...http.CallOption) (rsp *LoginByUsernameReply, err error)
 	RemoveCollectionShop(ctx context.Context, req *RemoveCollectionShopRequest, opts ...http.CallOption) (rsp *RemoveCollectionShopReply, err error)
 	UpdateCollectionShopById(ctx context.Context, req *UpdateCollectionShopByIdRequest, opts ...http.CallOption) (rsp *UpdateCollectionShopByIdReply, err error)
 }
 
-type FoodHTTPClientImpl struct {
+type ShopServiceHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewFoodHTTPClient(client *http.Client) FoodHTTPClient {
-	return &FoodHTTPClientImpl{client}
+func NewShopServiceHTTPClient(client *http.Client) ShopServiceHTTPClient {
+	return &ShopServiceHTTPClientImpl{client}
 }
 
-func (c *FoodHTTPClientImpl) CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...http.CallOption) (*CreateCollectionShopReply, error) {
+func (c *ShopServiceHTTPClientImpl) CreateCollectionShop(ctx context.Context, in *CreateCollectionShopRequest, opts ...http.CallOption) (*CreateCollectionShopReply, error) {
 	var out CreateCollectionShopReply
 	pattern := "/v1/collection_shop/create"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationFoodCreateCollectionShop))
+	opts = append(opts, http.Operation(OperationShopServiceCreateCollectionShop))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -210,11 +184,11 @@ func (c *FoodHTTPClientImpl) CreateCollectionShop(ctx context.Context, in *Creat
 	return &out, err
 }
 
-func (c *FoodHTTPClientImpl) GetCollectionShopById(ctx context.Context, in *GetCollectionShopByIdRequest, opts ...http.CallOption) (*GetCollectionShopByIdReply, error) {
+func (c *ShopServiceHTTPClientImpl) GetCollectionShopById(ctx context.Context, in *GetCollectionShopByIdRequest, opts ...http.CallOption) (*GetCollectionShopByIdReply, error) {
 	var out GetCollectionShopByIdReply
 	pattern := "/v1/collection_shop/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationFoodGetCollectionShopById))
+	opts = append(opts, http.Operation(OperationShopServiceGetCollectionShopById))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -223,11 +197,11 @@ func (c *FoodHTTPClientImpl) GetCollectionShopById(ctx context.Context, in *GetC
 	return &out, err
 }
 
-func (c *FoodHTTPClientImpl) ListCollectionShop(ctx context.Context, in *ListCollectionShopRequest, opts ...http.CallOption) (*ListCollectionShopReply, error) {
+func (c *ShopServiceHTTPClientImpl) ListCollectionShop(ctx context.Context, in *ListCollectionShopRequest, opts ...http.CallOption) (*ListCollectionShopReply, error) {
 	var out ListCollectionShopReply
 	pattern := "/v1/collection_shop/list"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationFoodListCollectionShop))
+	opts = append(opts, http.Operation(OperationShopServiceListCollectionShop))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -236,24 +210,11 @@ func (c *FoodHTTPClientImpl) ListCollectionShop(ctx context.Context, in *ListCol
 	return &out, err
 }
 
-func (c *FoodHTTPClientImpl) LoginByUsername(ctx context.Context, in *LoginByUsernameRequest, opts ...http.CallOption) (*LoginByUsernameReply, error) {
-	var out LoginByUsernameReply
-	pattern := "/v1/user/login/byUsername"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationFoodLoginByUsername))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *FoodHTTPClientImpl) RemoveCollectionShop(ctx context.Context, in *RemoveCollectionShopRequest, opts ...http.CallOption) (*RemoveCollectionShopReply, error) {
+func (c *ShopServiceHTTPClientImpl) RemoveCollectionShop(ctx context.Context, in *RemoveCollectionShopRequest, opts ...http.CallOption) (*RemoveCollectionShopReply, error) {
 	var out RemoveCollectionShopReply
 	pattern := "/v1/collection_shop/remove"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationFoodRemoveCollectionShop))
+	opts = append(opts, http.Operation(OperationShopServiceRemoveCollectionShop))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -262,11 +223,11 @@ func (c *FoodHTTPClientImpl) RemoveCollectionShop(ctx context.Context, in *Remov
 	return &out, err
 }
 
-func (c *FoodHTTPClientImpl) UpdateCollectionShopById(ctx context.Context, in *UpdateCollectionShopByIdRequest, opts ...http.CallOption) (*UpdateCollectionShopByIdReply, error) {
+func (c *ShopServiceHTTPClientImpl) UpdateCollectionShopById(ctx context.Context, in *UpdateCollectionShopByIdRequest, opts ...http.CallOption) (*UpdateCollectionShopByIdReply, error) {
 	var out UpdateCollectionShopByIdReply
 	pattern := "/v1/collection_shop/{id}"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationFoodUpdateCollectionShopById))
+	opts = append(opts, http.Operation(OperationShopServiceUpdateCollectionShopById))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

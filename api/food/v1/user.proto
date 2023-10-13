@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package api.food.v1.user;
+
+import "google/api/annotations.proto";
+
+option go_package = "food-server/api/food/v1;v1";
+
+
+service UserService {
+  rpc LoginByUsername (LoginByUsernameRequest) returns (LoginByUsernameReply) {
+    option (google.api.http) = {
+      post: "/v1/user/login/byUsername",
+      body: "*"
+    };
+  };
+}
+
+message userInfo {
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string token = 4;
+}
+
+message LoginByUsernameRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginByUsernameReply {
+  userInfo userInfo = 1;
+}

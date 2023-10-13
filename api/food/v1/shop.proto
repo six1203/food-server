@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package api.food.v1;
+package api.food.v1.shop;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
@@ -8,13 +8,13 @@ import "google/protobuf/timestamp.proto";
 option go_package = "food-server/api/food/v1;v1";
 
 
-service Food {
-  rpc LoginByUsername (LoginByUsernameRequest) returns (LoginByUsernameReply) {
-    option (google.api.http) = {
-      post: "/v1/user/login/byUsername",
-      body: "*"
-    };
-  };
+service ShopService {
+//  rpc LoginByUsername (LoginByUsernameRequest) returns (LoginByUsernameReply) {
+//    option (google.api.http) = {
+//      post: "/v1/user/login/byUsername",
+//      body: "*"
+//    };
+//  };
 
   rpc ListCollectionShop (ListCollectionShopRequest) returns (ListCollectionShopReply) {
     option (google.api.http) = {
@@ -51,21 +51,21 @@ service Food {
   };
 }
 
-message userInfo {
-  int64 id = 1;
-  string username = 2;
-  string password = 3;
-  string token = 4;
-}
-
-message LoginByUsernameRequest {
-  string username = 1;
-  string password = 2;
-}
-
-message LoginByUsernameReply {
-  userInfo userInfo = 1;
-}
+//message userInfo {
+//  int64 id = 1;
+//  string username = 2;
+//  string password = 3;
+//  string token = 4;
+//}
+//
+//message LoginByUsernameRequest {
+//  string username = 1;
+//  string password = 2;
+//}
+//
+//message LoginByUsernameReply {
+//  userInfo userInfo = 1;
+//}
 
 message CollectionShop {
   int64 id = 1;
